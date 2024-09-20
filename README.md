@@ -73,7 +73,7 @@ FROM timeslot_data
 
 ## Be aware of how `NOT IN` behaves with `NULL` values
 
-- `NOT IN` doesn't work if `NULL` is present in the values being checked against. As `NULL` represents Unknown the SQL engine can't verify that the value being checked against the values is not present.
+- `NOT IN` doesn't work if `NULL` is present in the values being checked against. As `NULL` represents Unknown the SQL engine can't verify that the value being checked is not present in the list.
   - Instead use `NOT EXISTS`.
 
 ``` SQL
