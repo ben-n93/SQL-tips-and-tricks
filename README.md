@@ -116,3 +116,24 @@ product
 , RANK() OVER (ORDER BY revenue DESC)
 FROM products 
 ```
+
+## Singleline comment out the multiline comment token 
+
+- When using multiline comment blocks, you can combine that with a single line comment.
+  When debugging you can very easily comment out large parts of your script, by just commenting out the start token of a multiline comment
+
+/*
+DROP TABLE IF EXISTS #someTempTable
+
+CREATE TABLE #someTempTable (id INT IDENTITY, someData VARCHAR(255))
+INSERT INTO #someTempTable 
+SELECT 'Lorem ipsum dolor' UNION ALL 
+SELECT 'sit amet, consetetur' UNION ALL 
+SELECT 'sadipscing elitr, sed diam nonumy ' UNION ALL 
+SELECT 'eirmod tempor invidunt' UNION ALL 
+SELECT 'ut labore et dolore magna' 
+--*/
+
+--/*
+SELECT * FROM #someTempTable
+--*/
