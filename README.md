@@ -122,6 +122,7 @@ FROM products
 - When using multiline comment blocks, you can combine that with a single line comment.
   When debugging you can very easily comment out large parts of your script, by just commenting out the start token of a multiline comment
 
+```SQL
 /*
 DROP TABLE IF EXISTS #someTempTable
 
@@ -137,3 +138,23 @@ SELECT 'ut labore et dolore magna'
 --/*
 SELECT * FROM #someTempTable
 --*/
+```
+
+## Inverting a Boolean Value
+
+- Quite sometimes in a Query one has to invert a boolean value from true to false or vice versa.
+  Usually that is done with a case statement, which works fine.... If you have collegues that remember that binery operators exist you can XOR a boolean to 1 with 2 chars of code as well :
+
+```SQL
+WITH invertBoolean (rn, boolValue) AS 
+(
+	SELECT 1 AS rn, CONVERT(BIT, 1) AS boolVal UNION ALL 
+	SELECT 2 AS rn, CONVERT(BIT, 0) AS boolVal 
+)
+SELECT rn
+	 , boolValue
+     , inverted_Case     = CASE WHEN boolValue = 0 THEN 1 ELSE 0 END
+	 , inverted_Xor	     = boolValue ^ 1
+FROM invertBoolean
+```
+   
