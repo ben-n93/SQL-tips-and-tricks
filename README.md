@@ -152,9 +152,9 @@ WITH invertBoolean (rn, boolValue) AS
 	SELECT 2 AS rn, CONVERT(BIT, 0) AS boolVal 
 )
 SELECT rn
-	 , boolValue
-     , inverted_Case     = CASE WHEN boolValue = 0 THEN 1 ELSE 0 END
-	 , inverted_Xor	     = boolValue ^ 1
+	, boolValue
+	, inverted_Case     = CASE WHEN boolValue = 0 THEN 1 ELSE 0 END
+	, inverted_Xor	     = boolValue ^ 1
 FROM invertBoolean
 ```
    
