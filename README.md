@@ -143,7 +143,7 @@ SELECT * FROM #someTempTable
 ## Inverting a Boolean Value
 
 - Quite sometimes in a Query one has to invert a boolean value from true to false or vice versa.
-  Usually that is done with a case statement, which works fine.... If you have collegues that remember that binery operators exist you can XOR a boolean to 1 with 2 chars of code as well :
+  Usually that is done with a case statement, which works fine.... If you have colleagues that remember that binery operators exist you can XOR a boolean to 1 with 2 chars of code as well :
 
 ```SQL
 WITH invertBoolean (rn, boolValue) AS 
