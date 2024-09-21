@@ -9,8 +9,9 @@ Feel free to contribute your own by opening a pull requests!
 - [Use a leading comma to seperate fields](#use-a-leading-comma-to-separate-fields)
 - [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
 - [Ident your code where appropriate](#ident-your-code-where-appropriate)
-- [Be aware of how NOT IN behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
+- [Be aware of how `NOT IN` behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
 - [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
+- [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
 
 ## Use a leading comma to separate fields
 
@@ -109,10 +110,19 @@ VALUES
     ('Robot', 150),
     ('Alien', 90);
 
--- The window function will rank the 'Robot' product as 1 when it should be 3
+-- The window function will rank the 'Robot' product as 1 when it should be 3.
 SELECT 
 product
 , CASE product WHEN 'Robot' THEN 0 ELSE revenue END AS revenue
 , RANK() OVER (ORDER BY revenue DESC)
 FROM products 
+```
+
+## You can use the `::` operator to cast the data type of a value 
+
+In some RDBMs you can use the `::` operator to cast a value from one data type to another:
+
+```SQL
+SELECT CAST('5' AS INTEGER); -- Using the CAST function.
+SELECT '5'::INTEGER; -- Using :: syntax.
 ```
