@@ -2,6 +2,8 @@
 
 A (somewhat opinionated) list of SQL tips and tricks I've picked up over the years.
 
+Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 6](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite. 
+
 Feel free to contribute your own by opening a pull requests!
 
 ## Table of contents
@@ -13,6 +15,8 @@ Feel free to contribute your own by opening a pull requests!
 5) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
 6) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
 7) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
+8) [Anti-joins are your friend](#anti-joins-are-your-friend)
+9) [Comment your code!](#comment-your-code)
 
 
 ## Use a leading comma to separate fields
@@ -145,4 +149,51 @@ FROM employees
 GROUP BY 1 -- dept_no is the first column in the SELECT clause.
 ORDER BY 2 DESC
 ;
+```
+
+## Anti-joins are your friend
+Anti-joins are incredible useful, mostly (in my experience) for when when you only want to return rows/values from one table that aren't present in another table.
+- You could instead use a subquery although conventional wisdom dictates that
+anti-joins are faster.
+- `EXCEPT` is an interesting operator for removing rows from one table which appear in another query table but I suggest you read up on it further before using it.
+
+```SQL
+-- Anti-join.
+SELECT 
+video_content.*
+FROM video_content
+    LEFT JOIN archive
+    on video_content.series_id = archive.series_id
+WHERE 1=1
+AND archive.series_id IS NULL -- Any rows with no match will have a NULL value.
+
+-- Subquery.
+SELECT 
+*
+FROM video_content
+WHERE 1=1
+AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values (see tip 4).
+
+-- EXCEPT.
+SELECT series_id
+FROM video_content
+EXCEPT
+SELECT series_id
+FROM archive
+```
+
+## Comment your code!
+While in the moment you know why you did something if you revisit
+the code weeks, months or years later you might not remember.
+- In general you should strive to write comments that explain why you did something, not how.
+- Your colleagues and future self will thank you!
+
+```SQL
+SELECT 
+*
+FROM video_content
+    LEFT JOIN archive -- New CMS cannot process archive video formats. 
+    on video_content.series_id = archive.series_id
+WHERE 1=1
+AND archive.series_id IS NULL
 ```
