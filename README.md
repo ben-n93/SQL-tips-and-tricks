@@ -6,13 +6,14 @@ Feel free to contribute your own by opening a pull requests!
 
 ## Table of contents
 
-- [Use a leading comma to seperate fields](#use-a-leading-comma-to-separate-fields)
-- [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
-- [Ident your code where appropriate](#ident-your-code-where-appropriate)
-- [Be aware of how `NOT IN` behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
-- [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
-- [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
-- [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-alwways-group-by-column-position)
+1) [Use a leading comma to seperate fields](#use-a-leading-comma-to-separate-fields)
+2) [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
+3) [Ident your code where appropriate](#ident-your-code-where-appropriate)
+4) [Be aware of how `NOT IN` behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
+5) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
+6) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
+7) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
+
 
 ## Use a leading comma to separate fields
 
@@ -132,6 +133,7 @@ SELECT '5'::INTEGER; -- Using :: syntax.
 
 Rather than use the column name you can `GROUP BY` or `ORDER BY` using
 column position.
+
 - For ad-hoc/one-off queries this can be useful but for production code
 you should always refer to a column by its name.
 
@@ -140,7 +142,7 @@ SELECT
 dept_no
 , SUM(salary) as dept_salary
 FROM employees
-GROUP BY 1
+GROUP BY 1 -- dept_no is the first column in the SELECT clause.
 ORDER BY 2 DESC
 ;
 ```
