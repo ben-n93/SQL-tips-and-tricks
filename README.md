@@ -45,7 +45,7 @@ FROM employees
 SELECT *
 FROM employees
 WHERE 1=1 -- Dummy value.
-AND job in ('Clerk', 'Manager')
+AND job IN ('Clerk', 'Manager')
 AND dept_no != 5
 ;
 ```
