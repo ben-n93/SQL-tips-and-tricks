@@ -12,6 +12,7 @@ Feel free to contribute your own by opening a pull requests!
 - [Be aware of how `NOT IN` behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
 - [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
 - [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
+- [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-alwways-group-by-column-position)
 
 ## Use a leading comma to separate fields
 
@@ -125,4 +126,21 @@ In some RDBMs you can use the `::` operator to cast a value from one data type t
 ```SQL
 SELECT CAST('5' AS INTEGER); -- Using the CAST function.
 SELECT '5'::INTEGER; -- Using :: syntax.
+```
+
+## You can (but shouldn't always) `GROUP BY` column position
+
+Rather than use the column name you can `GROUP BY` or `ORDER BY` using
+column position.
+- For ad-hoc/one-off queries this can be useful but for production code
+you should always refer to a column by its name.
+
+```SQL
+SELECT 
+dept_no
+, SUM(salary) as dept_salary
+FROM employees
+GROUP BY 1
+ORDER BY 2 DESC
+;
 ```
