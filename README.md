@@ -17,6 +17,8 @@ Feel free to contribute your own by opening a pull requests!
 7) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
 8) [Anti-joins are your friend](#anti-joins-are-your-friend)
 9) [Comment your code!](#comment-your-code)
+10) [Understand the order of execution](#understand-the-order-of-execution)
+11) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 
 
 ## Use a leading comma to separate fields
@@ -174,6 +176,17 @@ FROM video_content
 WHERE 1=1
 AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values (see tip 4).
 
+-- Correlated subquery.
+SELECT 
+*
+FROM video_content
+WHERE 1=1
+AND NOT EXISTS (
+        SELECT 1
+        FROM archive a
+        WHERE a.series_id = vc.series_id
+    )
+
 -- EXCEPT.
 SELECT series_id
 FROM video_content
@@ -196,4 +209,48 @@ FROM video_content
     on video_content.series_id = archive.series_id
 WHERE 1=1
 AND archive.series_id IS NULL
+```
+
+## Understand the order of execution
+If I had to give one piece of advice to someone learning SQL it'd be to under the order of 
+execution (of clauses). It will completely change how you write queries. This [blog post](https://blog.jooq.org/a-beginners-guide-to-the-true-order-of-sql-operations/) is a fantastic resource for learning.
+
+## Use QUALIFY to filter window functions
+
+`QUALIFY` lets you filter the results of a query based on a window function. This is useful for a variety of reasons, including to
+reduce the number of lines of code needed.
+
+For example, if I want to return the top 10 markets per product I can use
+`QUALIFY` rather than an in-line view:
+
+```SQL
+-- Using QUALIFY:
+SELECT 
+product
+, market
+, SUM(revenue) as market_revenue 
+FROM sales
+GROUP BY product, market
+QUALIFY DENSE_RANK() OVER (PARTITION BY product ORDER BY SUM(revenue) DESC)  <= 10
+ORDER BY product, market_revenue
+;
+
+-- Without QUALIFY:
+SELECT 
+product
+, market
+, market_revenue 
+FROM
+(
+SELECT 
+product
+, market
+, SUM(revenue) as market_revenue
+, DENSE_RANK() OVER (PARTITION BY product ORDER BY SUM(revenue) DESC) AS market_rank
+FROM sales
+GROUP BY product, market
+)
+WHERE market_rank  <= 10
+ORDER BY product, market_revenue
+;
 ```
