@@ -288,3 +288,15 @@ FROM video_content
 WHERE 1=1
 AND archive.series_id IS NULL
 ```
+
+### Use shortcut in DBeaver
+You can use shortcut in DBeaver to faster typing your code.
+Go to: Preferences -> Editors -> SQL editor -> templates
+and you see predefined templates.
+- scgb -> select count with group by
+- scount -> select row count
+- sf -> select * from
+- sob -> select with order by
+- swhere -> select with condition
+
+If you want add you own template see the [reference](https://dbeaver.com/docs/dbeaver/SQL-Templates/) or add a set of Oracle, SQL Server and PostgreSQL database [templates](https://gitlab.com/davidhooey/dbeaver_templates). 
