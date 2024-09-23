@@ -19,7 +19,7 @@ Feel free to contribute your own by opening a pull requests!
 9) [Comment your code!](#comment-your-code)
 10) [Understand the order of execution](#understand-the-order-of-execution)
 11) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
-
+12) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
 
 ## Use a leading comma to separate fields
 
@@ -203,7 +203,7 @@ the code weeks, months or years later you might not remember.
 
 ```SQL
 SELECT 
-*
+video_content.*
 FROM video_content
     LEFT JOIN archive -- New CMS cannot process archive video formats. 
     on video_content.series_id = archive.series_id
@@ -253,4 +253,23 @@ GROUP BY product, market
 WHERE market_rank  <= 10
 ORDER BY product, market_revenue
 ;
+```
+
+## Always specify which column belongs to which table
+
+When you have complex queries with multiple joins it pays to be able to 
+trace back an issue with a value to its source. 
+
+Additionally, your RDBMS might raise an error if two tables share the same
+column name and you don't specify which column you are using.
+
+```SQL
+SELECT 
+vc.video_id
+, vc.series_name
+, metadata.season
+, metadata.episode_number
+FROM video_content as vc 
+    INNER JOIN video_metadata as metadata
+    ON vc.video_id = metadata.video_id
 ```
