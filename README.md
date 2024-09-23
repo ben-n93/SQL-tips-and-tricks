@@ -289,6 +289,8 @@ WHERE 1=1
 AND archive.series_id IS NULL
 ```
 
+## Power of IDE
+
 ### Use shortcut in DBeaver
 You can use shortcut in DBeaver to faster typing your code.
 Go to: Preferences -> Editors -> SQL editor -> templates
@@ -300,3 +302,8 @@ and you see predefined templates.
 - swhere -> select with condition
 
 If you want add you own template see the [reference](https://dbeaver.com/docs/dbeaver/SQL-Templates/) or add a set of Oracle, SQL Server and PostgreSQL database [templates](https://gitlab.com/davidhooey/dbeaver_templates). 
+
+
+### Use AI Smart Assistance in DBeaver
+Install the required [extension](https://dbeaver.com/docs/dbeaver/AI-Smart-Assistance/).
+You can type queries in natural language and DBeaver will convert them into SQL statements.
