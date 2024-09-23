@@ -269,7 +269,7 @@ FROM video_content as vc
 ```
 
 ### Understand the order of execution
-If I had to give one piece of advice to someone learning SQL it'd be to under the order of 
+If I had to give one piece of advice to someone learning SQL it'd be to understand the order of 
 execution (of clauses). It will completely change how you write queries. This [blog post](https://blog.jooq.org/a-beginners-guide-to-the-true-order-of-sql-operations/) is a fantastic resource for learning.
 
 
