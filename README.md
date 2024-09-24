@@ -292,11 +292,11 @@ AND archive.series_id IS NULL
 Using Snowflake I once needed to return the latest date from a list of columns 
 and so I decided to use `GREATEST()`.
 
- What I didn't realise was that if one of the
-any argument is `NULL` then the function returns `NULL`. 
+What I didn't realise was that if one of the
+arguments is `NULL` then the function returns `NULL`. 
 
 If I'd read the documentation in full I'd have known! In many cases it can take just a minute or less to scan
-the documentation for a function and it will save you the headache of having to work
+the documentation and it will save you the headache of having to work
 out why something isn't working the way you expected:
 
 ```SQL
