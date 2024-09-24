@@ -4,8 +4,6 @@ A (somewhat opinionated) list of SQL tips and tricks I've picked up over the yea
 
 Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite. 
 
-Feel free to contribute your own by opening a pull requests!
-
 ## Table of contents
 
 ### Formatting/readability
@@ -28,6 +26,7 @@ Feel free to contribute your own by opening a pull requests!
 11) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
 12) [Understand the order of execution](#understand-the-order-of-execution)
 13) [Comment your code!](#comment-your-code)
+14) [Read the documentation (in full)](#read-the-documentation-in-full)
 
 
 ## Formatting/readability
@@ -287,4 +286,25 @@ FROM video_content
     on video_content.series_id = archive.series_id
 WHERE 1=1
 AND archive.series_id IS NULL
+```
+
+### Read the documentation (in full)
+Using Snowflake I once needed to return the latest date from a list of columns 
+and so I decided to use `GREATEST()`.
+
+ What I didn't realise was that if one of the
+any argument is `NULL` then the function returns `NULL`. 
+
+If I'd read the documentation in full I'd have known! In many cases it can take just a minute or less to scan
+the documentation for a function and it will save you the headache of having to work
+out why something isn't working the way you expected:
+
+```SQL
+-- If I'd read the documentation further I'd also have realised that my solution
+--to the NULL problem with GREATEST()...
+
+SELECT COALESCE(GREATEST(signup_date, consumption_date), signup_date, consumption_date)
+
+-- ... could have been solved with the following function:
+SELECT GREATEST_IGNORE_NULLS(signup_date, consumption_date)
 ```
