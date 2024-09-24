@@ -32,11 +32,11 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 ## Formatting/readability
 ### Use a leading comma to separate fields
 
-- Use a leading comma to seperate fields in the `SELECT` clause rather than a trailing comma.
+Use a leading comma to seperate fields in the `SELECT` clause rather than a trailing comma.
 
-    - Clearly defines that this is a new column vs code that's wrapped to multiple lines.
-    
-    - Visual cue to easily identify if the comma is missing or not. Varying line lengths makes it harder to determine.
+- Clearly defines that this is a new column vs code that's wrapped to multiple lines.
+
+- Visual cue to easily identify if the comma is missing or not. Varying line lengths makes it harder to determine.
  
 ```SQL
 SELECT
@@ -51,7 +51,8 @@ FROM employees
 - Also use a leading `AND` in the `WHERE` clause, for the same reasons (following tip demonstrates this). 
 
 ### **Use a dummy value in the WHERE clause**
-- Use a dummy value in the `WHERE` clause so you can dynamically add and remove conditions with ease:
+Use a dummy value in the `WHERE` clause so you can dynamically add and remove conditions with ease:
+
 ```SQL
 SELECT *
 FROM employees
@@ -62,7 +63,8 @@ AND dept_no != 5
 ```
 
 ### Ident your code where appropriate
-- Indent your code to make it more readable to colleagues and your future self:
+Indent your code to make it more readable to colleagues and your future self:
+
 ``` SQL
 -- Bad:
 SELECT 
@@ -204,8 +206,8 @@ ORDER BY 2 DESC
 
 ### Be aware of how `NOT IN` behaves with `NULL` values
 
-- `NOT IN` doesn't work if `NULL` is present in the values being checked against. As `NULL` represents Unknown the SQL engine can't verify that the value being checked is not present in the list.
-  - Instead use `NOT EXISTS`.
+`NOT IN` doesn't work if `NULL` is present in the values being checked against. As `NULL` represents Unknown the SQL engine can't verify that the value being checked is not present in the list.
+- Instead use `NOT EXISTS`.
 
 ``` SQL
 INSERT INTO departments (id)
@@ -229,7 +231,7 @@ WHERE NOT EXISTS (
 
 ### Rename calculated fields to avoiding ambiguity 
 
-- When creating a calculated field you might be tempted to rename it to an
+When creating a calculated field you might be tempted to rename it to an
 existing column but this can lead to unexpected behaviour, such as a 
 window function operating on the wrong field:
 
