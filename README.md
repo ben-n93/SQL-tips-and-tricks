@@ -8,9 +8,9 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 
 ### Formatting/readability
 
-1) [Use a leading comma to seperate fields](#use-a-leading-comma-to-separate-fields)
+1) [Use a leading comma to separate fields](#use-a-leading-comma-to-separate-fields)
 2) [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
-3) [Ident your code where appropriate](#ident-your-code-where-appropriate)
+3) [Indent your code where appropriate](#ident-your-code-where-appropriate)
 
 ### Useful features
 5) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
@@ -103,7 +103,7 @@ SELECT '5'::INTEGER; -- Using :: syntax.
 ```
 
 ### Anti-joins are your friend
-Anti-joins are incredible useful, mostly (in my experience) for when when you only want to return rows/values from one table that aren't present in another table.
+Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
 - You could instead use a subquery although conventional wisdom dictates that
 anti-joins are faster.
 - `EXCEPT` is an interesting operator for removing rows from one table which appear in another query table but I suggest you read up on it further before using it.
@@ -186,10 +186,10 @@ ORDER BY product, market_revenue
 
 ### You can (but shouldn't always) `GROUP BY` column position
 
-Rather than use the column name you can `GROUP BY` or `ORDER BY` using
+Instead of using the column name, you can `GROUP BY` or `ORDER BY` using the
 column position.
 
-- For ad-hoc/one-off queries this can be useful but for production code
+- This can be useful for ad-hoc/one-off queries, but for production code
 you should always refer to a column by its name.
 
 ```SQL
@@ -231,8 +231,8 @@ WHERE NOT EXISTS (
 
 ### Rename calculated fields to avoiding ambiguity 
 
-When creating a calculated field you might be tempted to rename it to an
-existing column but this can lead to unexpected behaviour, such as a 
+When creating a calculated field, you might be tempted to rename it to an
+existing column, but this can lead to unexpected behaviour, such as a 
 window function operating on the wrong field:
 
 ```SQL
@@ -252,7 +252,7 @@ FROM products
 
 ### Always specify which column belongs to which table
 
-When you have complex queries with multiple joins it pays to be able to 
+When you have complex queries with multiple joins, it pays to be able to 
 trace back an issue with a value to its source. 
 
 Additionally, your RDBMS might raise an error if two tables share the same
@@ -270,12 +270,12 @@ FROM video_content as vc
 ```
 
 ### Understand the order of execution
-If I had to give one piece of advice to someone learning SQL it'd be to understand the order of 
+If I had to give one piece of advice to someone learning SQL, it'd be to understand the order of 
 execution (of clauses). It will completely change how you write queries. This [blog post](https://blog.jooq.org/a-beginners-guide-to-the-true-order-of-sql-operations/) is a fantastic resource for learning.
 
 
 ### Comment your code!
-While in the moment you know why you did something if you revisit
+While in the moment you know why you did something, if you revisit
 the code weeks, months or years later you might not remember.
 - In general you should strive to write comments that explain why you did something, not how.
 - Your colleagues and future self will thank you!
