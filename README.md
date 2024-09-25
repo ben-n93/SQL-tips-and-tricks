@@ -1,6 +1,6 @@
 # SQL tips and tricks
 
-A (somewhat opinionated) list of SQL tips and tricks I've picked up over the years.
+A (somewhat opinionated) list of SQL tips and tricks that I've picked up over the years in my job as a data analyst.
 
 Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite. 
 
@@ -11,6 +11,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 1) [Use a leading comma to separate fields](#use-a-leading-comma-to-separate-fields)
 2) [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
 3) [Indent your code where appropriate](#indent-your-code-where-appropriate)
+4) [Consider CTEs when writing complex queries](#consider-ctes-when-writing-complex-queries)
 
 ### Useful features
 5) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
@@ -91,6 +92,72 @@ FROM timeslot_data
 ;
 ```
 
+### Consider CTEs when writing complex queries
+For longer than I'd care to admit I would nest inline views, which would lead to
+queries that were hard to understand, particularly if revisted after a few weeks.
+
+If you find yourself nesting inline views more than 2 or 3 levels deep, 
+consider using common table expressions, which can help you keep your code more organised and readable.
+
+```SQL
+/*
+The following query doesn't actually need to use an inline view or CTE but I'm just
+demonstrating the difference between the two.
+*/
+
+-- Using nested inline views.
+SELECT 
+vhs.movie
+, vhs.vhs_revenue
+, cs.cinema_revenue
+FROM 
+    (
+    SELECT
+    movie_id
+    , SUM(ticket_sales) AS cinema_revenue
+    FROM tickets
+    GROUP BY movie_id
+    ) AS cs
+    INNER JOIN 
+        (
+        SELECT 
+        movie
+        , movie_id
+        , SUM(revenue) AS vhs_revenue
+        FROM blockbuster
+        GROUP BY movie, movie_id
+        ) AS vhs
+        ON cs.movie_id = vhs.movie_id
+;
+
+-- Using CTEs.
+WITH cinema_sales AS 
+    (
+        SELECT 
+        movie_id
+        , SUM(ticket_sales) AS cinema_revenue
+        FROM tickets
+        GROUP BY movie_id
+    ),
+    vhs_sales AS
+    (
+        SELECT 
+        movie
+        , movie_id
+        , SUM(revenue) as vhs_revenue
+        FROM blockbuster
+        GROUP BY movie, movie_id
+    )
+SELECT 
+vhs.movie
+, vhs.vhs_revenue
+, cs.cinema_revenue
+FROM cinema_sales AS cs
+    INNER JOIN vhs_sales AS vhs
+    ON cs.movie_id = vhs.movie_id
+;
+```
+
 ## Useful features 
 
 ### You can use the `::` operator to cast the data type of a value 
@@ -150,7 +217,7 @@ FROM archive
 reduce the number of lines of code needed.
 
 For example, if I want to return the top 10 markets per product I can use
-`QUALIFY` rather than an in-line view:
+`QUALIFY` rather than an inline view:
 
 ```SQL
 -- Using QUALIFY:
