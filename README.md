@@ -10,7 +10,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 
 1) [Use a leading comma to separate fields](#use-a-leading-comma-to-separate-fields)
 2) [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
-3) [Indent your code where appropriate](#ident-your-code-where-appropriate)
+3) [Indent your code where appropriate](#indent-your-code-where-appropriate)
 
 ### Useful features
 5) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
