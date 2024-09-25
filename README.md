@@ -62,7 +62,7 @@ AND dept_no != 5
 ;
 ```
 
-### Ident your code where appropriate
+### Indent your code where appropriate
 Indent your code to make it more readable to colleagues and your future self:
 
 ``` SQL
