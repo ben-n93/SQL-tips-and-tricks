@@ -103,7 +103,7 @@ SELECT '5'::INTEGER; -- Using :: syntax.
 ```
 
 ### Anti-joins are your friend
-Anti-joins are incredible useful, mostly (in my experience) for when when you only want to return rows/values from one table that aren't present in another table.
+Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
 - You could instead use a subquery although conventional wisdom dictates that
 anti-joins are faster.
 - `EXCEPT` is an interesting operator for removing rows from one table which appear in another query table but I suggest you read up on it further before using it.
