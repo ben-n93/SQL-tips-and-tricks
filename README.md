@@ -52,7 +52,6 @@ FROM employees
 
 ### **Use a dummy value in the WHERE clause**
 Use a dummy value in the `WHERE` clause so you can dynamically add and remove conditions with ease:
-- Smarter people than me have pointed out `WHERE 1=1` can be a security risk under certain circumstances so just be aware of this. If you're just writing one-off analytical queries you should be fine.
 
 ```SQL
 SELECT *
