@@ -18,17 +18,18 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 6) [Anti-joins are your friend](#anti-joins-are-your-friend)
 7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
-
+9) [Use `EXCEPT` to... exclude... columns](#use-exclude-to-exclude-columns)
+10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
 
 ### Avoid pitfalls
 
-9)  [Be aware of how `NOT IN` behaves with NULL values](#be-aware-of-how-not-in-behaves-with-null-values)
-10) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
-11) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
-12) [Understand the order of execution](#understand-the-order-of-execution)
-13) [Comment your code!](#comment-your-code)
-14) [Read the documentation (in full)](#read-the-documentation-in-full)
-15) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
+11)  [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
+12) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
+13) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
+14) [Understand the order of execution](#understand-the-order-of-execution)
+15) [Comment your code!](#comment-your-code)
+16) [Read the documentation (in full)](#read-the-documentation-in-full)
+17) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -191,7 +192,7 @@ SELECT
 *
 FROM video_content
 WHERE 1=1
-AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values (see tip 9).
+AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values.
 
 -- Correlated subquery.
 SELECT 
@@ -212,7 +213,7 @@ SELECT series_id
 FROM archive
 ```
 
-### Use QUALIFY to filter window functions
+### Use `QUALIFY` to filter window functions
 
 `QUALIFY` lets you filter the results of a query based on a window function. This is useful for a variety of reasons, including to
 reduce the number of lines of code needed.
@@ -269,6 +270,35 @@ GROUP BY 1 -- dept_no is the first column in the SELECT clause.
 ORDER BY 2 DESC
 ;
 ```
+
+### Use `EXCLUDE` to... exclude... columns 
+
+Sometimes I want to return all columns from a table except for one and I don't want to have to write
+out the name of every column in the `SELECT` clause (particularly if there a lot of columns!). In this scenario you can use `EXCLUDE`.
+- Be aware that if columns are added to the table without you realising by using `EXCEPT` you will return columns you might not want! Being lazy can have its consequences.
+
+```SQL
+SELECT * EXCLUDE(salary)
+FROM employees
+;
+```
+
+### You can create a grand total with `GROUP BY ROLLUP`
+Creating a grand total (or sub-totals) is possible thanks to `GROUP BY ROLLUP`.
+
+For example, if you've aggregated a company's employees salary per department you 
+can use `GROUP BY ROLLUP` to create a grand total that sums up the aggregated
+`dept_salary` column.
+
+```SQL
+SELECT 
+COALESCE(dept_no, 'Total') AS dept_no
+, SUM(salary) as dept_salary
+FROM employees
+GROUP BY ROLLUP(dept_no)
+ORDER BY dept_salary -- Be sure to order by this column to ensure the Total appears last/at the bottom of the result set.
+```
+
 
 ## Common pitfalls
 
