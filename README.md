@@ -197,7 +197,7 @@ AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of N
 -- Correlated subquery.
 SELECT 
 *
-FROM video_content
+FROM video_content vc
 WHERE 1=1
 AND NOT EXISTS (
         SELECT 1
