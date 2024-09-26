@@ -28,6 +28,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 12) [Understand the order of execution](#understand-the-order-of-execution)
 13) [Comment your code!](#comment-your-code)
 14) [Read the documentation (in full)](#read-the-documentation-in-full)
+15) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -377,3 +378,12 @@ SELECT COALESCE(GREATEST(signup_date, consumption_date), signup_date, consumptio
 -- ... could have been solved with the following function:
 SELECT GREATEST_IGNORE_NULLS(signup_date, consumption_date)
 ```
+
+### Use descriptive names for your saved queries
+
+There's almost nothing worse than not being able to find a query you need to re-run/refer back to.
+
+Use a descriptive name when saving your queries so you can easily find what you're looking for.
+
+I usually will write the subject of the query, the month the query was ran and the name of the requester (if they exist).
+For example: `Lapsed users analysis - 2023-09-01 - Olivia Roberts`
