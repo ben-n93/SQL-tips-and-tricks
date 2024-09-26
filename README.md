@@ -2,7 +2,7 @@
 
 A (somewhat opinionated) list of SQL tips and tricks that I've picked up over the years in my job as a data analyst.
 
-Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite. 
+Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite.
 
 ## Table of contents
 
@@ -274,8 +274,8 @@ ORDER BY 2 DESC
 ### Use `EXCLUDE` to... exclude... columns 
 
 Sometimes I want to return all columns from a table except for one and I don't want to have to write
-out the name of every column in the `SELECT` clause (particularly if there a lot of columns!). In this scenario you can use `EXCLUDE`.
-- Be aware that if columns are added to the table without you realising by using `EXCEPT` you will return columns you might not want! Being lazy can have its consequences.
+out the name of every column in the `SELECT` clause (particularly if there are a lot of columns!). In this scenario you can use `EXCLUDE`.
+- Be aware that if columns are added to the table without you realising, by using `EXCEPT` you will return columns you might not want! Being lazy can have its consequences.
 
 ```SQL
 SELECT * EXCLUDE(salary)
