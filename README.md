@@ -54,13 +54,22 @@ FROM employees
 - Also use a leading `AND` in the `WHERE` clause, for the same reasons (following tip demonstrates this). 
 
 ### **Use a dummy value in the WHERE clause**
-Use a dummy value in the `WHERE` clause so you can dynamically add and remove conditions with ease:
+Use a dummy value in the `WHERE` clause so you can easily comment out conditions when testing or tweaking a query.
 
 ```SQL
+-- If I want to comment out the job condition the following query will break.
 SELECT *
 FROM employees
-WHERE 1=1 -- Dummy value.
-AND job IN ('Clerk', 'Manager')
+WHERE
+--job IN ('Clerk', 'Manager')
+AND dept_no != 5
+;
+
+-- With a dummy value there's no issue. I can comment out all the conditions and 1=1 will ensure the query still runs.
+SELECT *
+FROM employees
+WHERE 1=1
+-- AND job IN ('Clerk', 'Manager')
 AND dept_no != 5
 ;
 ```
