@@ -146,7 +146,7 @@ WITH cinema_sales AS
         SELECT 
         movie
         , movie_id
-        , SUM(revenue) as vhs_revenue
+        , SUM(revenue) AS vhs_revenue
         FROM blockbuster
         GROUP BY movie, movie_id
     )
@@ -226,7 +226,7 @@ For example, if I want to return the top 10 markets per product I can use
 SELECT 
 product
 , market
-, SUM(revenue) as market_revenue 
+, SUM(revenue) AS market_revenue 
 FROM sales
 GROUP BY product, market
 QUALIFY DENSE_RANK() OVER (PARTITION BY product ORDER BY SUM(revenue) DESC)  <= 10
@@ -243,7 +243,7 @@ FROM
 SELECT 
 product
 , market
-, SUM(revenue) as market_revenue
+, SUM(revenue) AS market_revenue
 , DENSE_RANK() OVER (PARTITION BY product ORDER BY SUM(revenue) DESC) AS market_rank
 FROM sales
 GROUP BY product, market
@@ -264,7 +264,7 @@ you should always refer to a column by its name.
 ```SQL
 SELECT 
 dept_no
-, SUM(salary) as dept_salary
+, SUM(salary) AS dept_salary
 FROM employees
 GROUP BY 1 -- dept_no is the first column in the SELECT clause.
 ORDER BY 2 DESC
@@ -293,7 +293,7 @@ can use `GROUP BY ROLLUP` to create a grand total that sums up the aggregated
 ```SQL
 SELECT 
 COALESCE(dept_no, 'Total') AS dept_no
-, SUM(salary) as dept_salary
+, SUM(salary) AS dept_salary
 FROM employees
 GROUP BY ROLLUP(dept_no)
 ORDER BY dept_salary -- Be sure to order by this column to ensure the Total appears last/at the bottom of the result set.
@@ -362,8 +362,8 @@ vc.video_id
 , vc.series_name
 , metadata.season
 , metadata.episode_number
-FROM video_content as vc 
-    INNER JOIN video_metadata as metadata
+FROM video_content AS vc 
+    INNER JOIN video_metadata AS metadata
     ON vc.video_id = metadata.video_id
 ```
 
