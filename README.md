@@ -18,7 +18,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 6) [Anti-joins are your friend](#anti-joins-are-your-friend)
 7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
-9) [Use `EXCEPT` to... exclude... columns](#use-exclude-to-exclude-columns)
+9) [Use `EXCLUDE` to... exclude columns](#use-exclude-to-exclude-columns)
 10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
 
 ### Avoid pitfalls
