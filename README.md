@@ -336,7 +336,7 @@ WHERE NOT EXISTS (
 ;
 ```
 
-### Rename calculated fields to avoiding ambiguity 
+### Rename calculated fields to avoid ambiguity 
 
 When creating a calculated field, you might be tempted to rename it to an
 existing column, but this can lead to unexpected behaviour, such as a 
