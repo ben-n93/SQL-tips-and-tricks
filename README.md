@@ -35,7 +35,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 ## Formatting/readability
 ### Use a leading comma to separate fields
 
-Use a leading comma to seperate fields in the `SELECT` clause rather than a trailing comma.
+Use a leading comma to separate fields in the `SELECT` clause rather than a trailing comma.
 
 - Clearly defines that this is a new column vs code that's wrapped to multiple lines.
 
@@ -105,7 +105,7 @@ FROM timeslot_data
 
 ### Consider CTEs when writing complex queries
 For longer than I'd care to admit I would nest inline views, which would lead to
-queries that were hard to understand, particularly if revisted after a few weeks.
+queries that were hard to understand, particularly if revisited after a few weeks.
 
 If you find yourself nesting inline views more than 2 or 3 levels deep, 
 consider using common table expressions, which can help you keep your code more organised and readable.
