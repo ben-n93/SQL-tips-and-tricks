@@ -182,8 +182,7 @@ SELECT '5'::INTEGER; -- Using :: syntax.
 
 ### Anti-joins are your friend
 Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
-- You could instead use a subquery although conventional wisdom dictates that
-anti-joins are faster.
+- You could instead use a subquery although you might want to experiment as to which method is faster.
 - `EXCEPT` is an interesting operator for removing rows from one table which appear in another query table but I suggest you read up on it further before using it.
 
 ```SQL
@@ -195,6 +194,7 @@ FROM video_content
     on video_content.series_id = archive.series_id
 WHERE 1=1
 AND archive.series_id IS NULL -- Any rows with no match will have a NULL value.
+;
 
 -- Subquery.
 SELECT 
@@ -213,6 +213,7 @@ AND NOT EXISTS (
         FROM archive a
         WHERE a.series_id = vc.series_id
     )
+;
 
 -- EXCEPT.
 SELECT series_id
@@ -220,6 +221,7 @@ FROM video_content
 EXCEPT
 SELECT series_id
 FROM archive
+;
 ```
 
 ### Use `QUALIFY` to filter window functions
@@ -306,6 +308,7 @@ COALESCE(dept_no, 'Total') AS dept_no
 FROM employees
 GROUP BY ROLLUP(dept_no)
 ORDER BY dept_salary -- Be sure to order by this column to ensure the Total appears last/at the bottom of the result set.
+;
 ```
 
 
@@ -324,6 +327,7 @@ VALUES (1), (2), (NULL);
 SELECT * 
 FROM employees 
 WHERE department_id NOT IN (SELECT DISTINCT id from departments)
+;
 
 -- Solution.
 SELECT * 
@@ -354,7 +358,8 @@ SELECT
 product
 , CASE product WHEN 'Robot' THEN 0 ELSE revenue END AS revenue
 , RANK() OVER (ORDER BY revenue DESC)
-FROM products 
+FROM products
+;
 ```
 
 ### Always specify which column belongs to which table
@@ -374,6 +379,7 @@ vc.video_id
 FROM video_content AS vc 
     INNER JOIN video_metadata AS metadata
     ON vc.video_id = metadata.video_id
+;
 ```
 
 ### Understand the order of execution
@@ -395,6 +401,7 @@ FROM video_content
     on video_content.series_id = archive.series_id
 WHERE 1=1
 AND archive.series_id IS NULL
+;
 ```
 
 ### Read the documentation (in full)
@@ -412,10 +419,10 @@ out why something isn't working the way you expected:
 -- If I'd read the documentation further I'd also have realised that my solution
 --to the NULL problem with GREATEST()...
 
-SELECT COALESCE(GREATEST(signup_date, consumption_date), signup_date, consumption_date)
+SELECT COALESCE(GREATEST(signup_date, consumption_date), signup_date, consumption_date);
 
 -- ... could have been solved with the following function:
-SELECT GREATEST_IGNORE_NULLS(signup_date, consumption_date)
+SELECT GREATEST_IGNORE_NULLS(signup_date, consumption_date);
 ```
 
 ### Use descriptive names for your saved queries
