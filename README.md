@@ -1,6 +1,9 @@
 # SQL tips and tricks
 
-A (somewhat opinionated) list of SQL tips and tricks that I've picked up over the years in my job as a data analyst.
+A (somewhat opinionated) list of SQL tips and tricks that I've picked up over the years.
+
+There's so much you can you do with SQL but I've focused on what I find most useful in my day-to-day work as a data analyst and what 
+I wish I had known when I first started writing SQL.
 
 Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite.
 
@@ -15,21 +18,22 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 
 ### Useful features
 5) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
-6) [Anti-joins are your friend](#anti-joins-are-your-friend)
+6) [Anti-joins will return rows not present in another table](#anti-joins-will-return-rows-not-present-in-another-table)
 7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
 9) [Use `EXCLUDE` to... exclude columns](#use-exclude-to-exclude-columns)
 10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
+11) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
 
 ### Avoid pitfalls
 
-11)  [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-12) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
-13) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
-14) [Understand the order of execution](#understand-the-order-of-execution)
-15) [Comment your code!](#comment-your-code)
-16) [Read the documentation (in full)](#read-the-documentation-in-full)
-17) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
+12)  [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
+13) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
+14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
+15) [Understand the order of execution](#understand-the-order-of-execution)
+16) [Comment your code!](#comment-your-code)
+17) [Read the documentation (in full)](#read-the-documentation-in-full)
+18) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -180,10 +184,9 @@ SELECT CAST('5' AS INTEGER); -- Using the CAST function.
 SELECT '5'::INTEGER; -- Using :: syntax.
 ```
 
-### Anti-joins are your friend
+### Anti-joins will return rows not present in another table
 Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
 - You could instead use a subquery although you might want to experiment as to which method is faster.
-- `EXCEPT` is an interesting operator for removing rows from one table which appear in another query table but I suggest you read up on it further before using it.
 
 ```SQL
 -- Anti-join.
@@ -213,14 +216,6 @@ AND NOT EXISTS (
         FROM archive a
         WHERE a.series_id = vc.series_id
     )
-;
-
--- EXCEPT.
-SELECT series_id
-FROM video_content
-EXCEPT
-SELECT series_id
-FROM archive
 ;
 ```
 
@@ -311,6 +306,31 @@ ORDER BY dept_salary -- Be sure to order by this column to ensure the Total appe
 ;
 ```
 
+### Use `EXCEPT` to find the difference between two datasets
+
+`EXCEPT` returns rows from the first query's result set that don't appear in the second query's result set.
+
+```SQL
+-- Miles Davis will be returned from this query.
+SELECT Name
+FROM artist
+WHERE name = 'Miles Davis'
+EXCEPT 
+SELECT Name
+FROM artist
+WHERE name = 'Nirvana'
+;
+
+-- Nothing will be returned from this query as 'Miles Davis' appears in both queries' result sets.
+SELECT Name
+FROM artist
+WHERE name = 'Miles Davis'
+EXCEPT 
+SELECT Name
+FROM artist
+WHERE name = 'Miles Davis'
+;
+```
 
 ## Common pitfalls
 
@@ -398,7 +418,7 @@ SELECT
 video_content.*
 FROM video_content
     LEFT JOIN archive -- New CMS cannot process archive video formats. 
-    on video_content.series_id = archive.series_id
+    ON video_content.series_id = archive.series_id
 WHERE 1=1
 AND archive.series_id IS NULL
 ;
