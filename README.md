@@ -364,7 +364,8 @@ WHERE NOT EXISTS (
 
 When creating a calculated field, you might be tempted to rename it to an
 existing column, but this can lead to unexpected behaviour, such as a 
-window function operating on the wrong field:
+window function operating on the wrong field.
+- Note that only in Snowflake and MariaDB can you reference a renamed column's alias. However the solution should work for any RDBMs.
 
 ```SQL
 INSERT INTO products (product, revenue)
@@ -380,6 +381,15 @@ product
 , RANK() OVER (ORDER BY revenue DESC)
 FROM products
 ;
+
+-- You can instead do this:
+SELECT 
+product
+, CASE product WHEN 'Robot' THEN 0 ELSE revenue END AS revenue
+, RANK() OVER (ORDER BY CASE product WHEN 'Robot' THEN 0 ELSE revenue END DESC)
+FROM products
+;
+
 ```
 
 ### Always specify which column belongs to which table
