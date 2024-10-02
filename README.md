@@ -353,6 +353,12 @@ When creating a calculated field, you might be tempted to rename it to an existi
 window function operating on the wrong field.
 
 ```SQL
+CREATE TABLE products (
+    product VARCHAR(50) NOT NULL,
+    revenue INT NOT NULL
+)
+;
+
 INSERT INTO products (product, revenue)
 VALUES 
     ('Shark', 100),
