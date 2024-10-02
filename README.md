@@ -21,19 +21,18 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 6) [Anti-joins will return rows not present in another table](#anti-joins-will-return-rows-not-present-in-another-table)
 7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
-9) [Use `EXCLUDE` to... exclude columns](#use-exclude-to-exclude-columns)
-10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
-11) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
+9) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
+10) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
 
 ### Avoid pitfalls
 
-12)  [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-13) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoid-ambiguity)
-14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
-15) [Understand the order of execution](#understand-the-order-of-execution)
-16) [Comment your code!](#comment-your-code)
-17) [Read the documentation (in full)](#read-the-documentation-in-full)
-18) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
+11) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
+12) [Avoid ambiguity when renaming calculated fields](#avoid-ambiguity-when-renaming-calculated-fields)
+13) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
+14) [Understand the order of execution](#understand-the-order-of-execution)
+15) [Comment your code!](#comment-your-code)
+16) [Read the documentation (in full)](#read-the-documentation-in-full)
+17) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -277,18 +276,6 @@ ORDER BY 2 DESC
 ;
 ```
 
-### Use `EXCLUDE` to... exclude... columns 
-
-Sometimes I want to return all columns from a table except for one and I don't want to have to write
-out the name of every column in the `SELECT` clause (particularly if there are a lot of columns!). In this scenario you can use `EXCLUDE`.
-- Be aware that if columns are added to the table without you realising, by using `EXCEPT` you will return columns you might not want! Being lazy can have its consequences.
-
-```SQL
-SELECT * EXCLUDE(salary)
-FROM employees
-;
-```
-
 ### You can create a grand total with `GROUP BY ROLLUP`
 Creating a grand total (or sub-totals) is possible thanks to `GROUP BY ROLLUP`.
 
@@ -360,12 +347,10 @@ WHERE NOT EXISTS (
 ;
 ```
 
-### Rename calculated fields to avoid ambiguity 
+### Avoid ambiguity when renaming calculated fields
 
-When creating a calculated field, you might be tempted to rename it to an
-existing column, but this can lead to unexpected behaviour, such as a 
+When creating a calculated field, you might be tempted to rename it to an existing column, but this can lead to unexpected behaviour, such as a 
 window function operating on the wrong field.
-- Note that only in Snowflake and MariaDB can you reference a renamed column's alias in a window function (as follows). However the solution should work for any RDBMs.
 
 ```SQL
 INSERT INTO products (product, revenue)
