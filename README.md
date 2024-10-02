@@ -204,6 +204,7 @@ SELECT
 FROM video_content
 WHERE 1=1
 AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values.
+;
 
 -- Correlated subquery.
 SELECT 
