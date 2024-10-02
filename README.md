@@ -28,7 +28,7 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 ### Avoid pitfalls
 
 12)  [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-13) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoiding-ambiguity)
+13) [Rename calculated fields to avoid ambiguity](#rename-calculated-fields-to-avoid-ambiguity)
 14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
 15) [Understand the order of execution](#understand-the-order-of-execution)
 16) [Comment your code!](#comment-your-code)
@@ -365,7 +365,7 @@ WHERE NOT EXISTS (
 When creating a calculated field, you might be tempted to rename it to an
 existing column, but this can lead to unexpected behaviour, such as a 
 window function operating on the wrong field.
-- Note that only in Snowflake and MariaDB can you reference a renamed column's alias. However the solution should work for any RDBMs.
+- Note that only in Snowflake and MariaDB can you reference a renamed column's alias in a window function (as follows). However the solution should work for any RDBMs.
 
 ```SQL
 INSERT INTO products (product, revenue)
