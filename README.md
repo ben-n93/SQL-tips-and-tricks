@@ -13,26 +13,25 @@ Please note that some of these tips might not be relevant for all RDBMs. For exa
 
 1) [Use a leading comma to separate fields](#use-a-leading-comma-to-separate-fields)
 2) [Use a dummy value in the WHERE clause](#use-a-dummy-value-in-the-where-clause)
-3) [Indent your code where appropriate](#indent-your-code-where-appropriate)
+3) [Indent your code](#indent-your-code)
 4) [Consider CTEs when writing complex queries](#consider-ctes-when-writing-complex-queries)
 
 ### Useful features
-5) [You can use the `::` operator to cast the data type of a value](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)
-6) [Anti-joins will return rows not present in another table](#anti-joins-will-return-rows-not-present-in-another-table)
-7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
-8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
-9) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
-10) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
+7) [Anti-joins will return rows not present in another table](#anti-joins-will-return-rows-not-present-in-another-table)
+8) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
+9) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
+10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
+11) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
 
 ### Avoid pitfalls
 
-11) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-12) [Avoid ambiguity when renaming calculated fields](#avoid-ambiguity-when-renaming-calculated-fields)
-13) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
-14) [Understand the order of execution](#understand-the-order-of-execution)
-15) [Comment your code!](#comment-your-code)
-16) [Read the documentation (in full)](#read-the-documentation-in-full)
-17) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
+12) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
+13) [Avoid ambiguity when renaming calculated fields](#avoid-ambiguity-when-renaming-calculated-fields)
+14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
+15) [Understand the order of execution](#understand-the-order-of-execution)
+16) [Comment your code!](#comment-your-code)
+17) [Read the documentation (in full)](#read-the-documentation-in-full)
+18) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -77,32 +76,31 @@ AND dept_no != 5
 ;
 ```
 
-### Indent your code where appropriate
-Indent your code to make it more readable to colleagues and your future self:
+### Indent your code
+Indent your code to make it more readable to colleagues and your future self.
+
+Opinions will vary on what this looks like so be sure to follow your company/team's guidelines or, if that doesn't exist, go with whatever works for you.
+
+You can also use an online formatter like [poorsql](https://poorsql.com/) or a linter like [sqlfluff](https://github.com/sqlfluff/sqlfluff).
 
 ``` SQL
--- Bad:
 SELECT 
-timeslot_date
-, timeslot_channel 
-, overnight_fta_share
-, IFF(DATEDIFF(DAY, timeslot_date, CURRENT_DATE()) > 7, LAG(overnight_fta_share, 1) OVER (PARTITION BY timeslot_date, timeslot_channel ORDER BY timeslot_activity), NULL) AS C7_fta_share
-, IFF(DATEDIFF(DAY, timeslot_date, CURRENT_DATE()) >= 29, LAG(overnight_fta_share, 2) OVER (PARTITION BY timeslot_date, timeslot_channel ORDER BY timeslot_activity), NULL) AS C28_fta_share
-FROM timeslot_data
+vc.video_id
+, CASE WHEN meta.GENRE IN ('Drama', 'Comedy') THEN 'Entertainment' ELSE meta.GENRE END as content_type
+FROM video_content AS vc
+INNER JOIN metadata ON vc.video_id = metadata.video_id
 ;
 
 -- Good:
 SELECT 
-timeslot_date
-, timeslot_channel 
-, overnight_fta_share
-, IFF(DATEDIFF(DAY, timeslot_date, CURRENT_DATE()) > 7, -- First argument of IFF.
-	LAG(overnight_fta_share, 1) OVER (PARTITION BY timeslot_date, timeslot_channel ORDER BY timeslot_activity), -- Second argument of IFF.
-		NULL) AS C7_fta_share -- Third argument of IFF.
-, IFF(DATEDIFF(DAY, timeslot_date, CURRENT_DATE()) >= 29, 
-		LAG(overnight_fta_share, 2) OVER (PARTITION BY timeslot_date, timeslot_channel ORDER BY timeslot_activity), 
-			NULL) AS C28_fta_share
-FROM timeslot_data
+vc.video_id
+, CASE 
+	WHEN meta.GENRE IN ('Drama', 'Comedy') THEN 'Entertainment' 
+	ELSE meta.GENRE 
+END AS content_type
+FROM video_content
+INNER JOIN metadata 
+	ON video_content.video_id = metadata.video_id
 ;
 ```
 
@@ -173,15 +171,6 @@ FROM cinema_sales AS cs
 ```
 
 ## Useful features 
-
-### You can use the `::` operator to cast the data type of a value 
-
-In some RDBMs you can use the `::` operator to cast a value from one data type to another:
-
-```SQL
-SELECT CAST('5' AS INTEGER); -- Using the CAST function.
-SELECT '5'::INTEGER; -- Using :: syntax.
-```
 
 ### Anti-joins will return rows not present in another table
 Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
