@@ -5,7 +5,7 @@ A (somewhat opinionated) list of SQL tips and tricks that I've picked up over th
 There's so much you can you do with SQL but I've focused on what I find most useful in my day-to-day work as a data analyst and what 
 I wish I had known when I first started writing SQL.
 
-Please note that some of these tips might not be relevant for all RDBMs. For example, the `::` syntax ([tip 5](#you-can-use-the--operator-to-cast-the-data-type-of-a-value)) does not work in SQLite.
+Please note that some of these tips might not be relevant for all RDBMs.
 
 ## Table of contents
 
