@@ -84,7 +84,8 @@ Opinions will vary on what this looks like so be sure to follow your company/tea
 You can also use an online formatter like [poorsql](https://poorsql.com/) or a linter like [sqlfluff](https://github.com/sqlfluff/sqlfluff).
 
 ``` SQL
-SELECT 
+SELECT
+-- Bad:
 vc.video_id
 , CASE WHEN meta.GENRE IN ('Drama', 'Comedy') THEN 'Entertainment' ELSE meta.GENRE END as content_type
 FROM video_content AS vc
