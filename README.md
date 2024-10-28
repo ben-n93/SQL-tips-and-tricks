@@ -1,5 +1,7 @@
 # SQL tips and tricks
 
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
+
 A (somewhat opinionated) list of SQL tips and tricks that I've picked up over the years.
 
 There's so much you can you do with SQL but I've focused on what I find most useful in my day-to-day work as a data analyst and what 
