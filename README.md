@@ -19,21 +19,22 @@ Please note that some of these tips might not be relevant for all RDBMs.
 4) [Consider CTEs when writing complex queries](#consider-ctes-when-writing-complex-queries)
 
 ### Useful features
-7) [Anti-joins will return rows from one table that have no match in another table](#anti-joins-will-return-rows-from-one-table-that-have-no-match-in-another-table)
-8) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
-9) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
-10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
-11) [Use `EXCEPT` to find the difference between two datasets](#use-except-to-find-the-difference-between-two-datasets)
+5) [Anti-joins will return rows from one table that have no match in another table](#anti-joins-will-return-rows-from-one-table-that-have-no-match-in-another-table)
+6) [`NOT EXISTS` is faster than `NOT IN` if your column allows `NULL`](#not-exists-is-faster-than-not-in-if-your-column-allows-null)
+7) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
+8) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
+9) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
+10) [Use `EXCEPT` to find the difference between two tables](#use-except-to-find-the-difference-between-two-tables)
 
 ### Avoid pitfalls
 
-12) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-13) [Avoid ambiguity when naming calculated fields](#avoid-ambiguity-when-naming-calculated-fields)
-14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
-15) [Understand the order of execution](#understand-the-order-of-execution)
-16) [Comment your code!](#comment-your-code)
-17) [Read the documentation (in full)](#read-the-documentation-in-full)
-18) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
+11) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
+12) [Avoid ambiguity when naming calculated fields](#avoid-ambiguity-when-naming-calculated-fields)
+13) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
+14) [Understand the order of execution](#understand-the-order-of-execution)
+15) [Comment your code!](#comment-your-code)
+16) [Read the documentation (in full)](#read-the-documentation-in-full)
+17) [Use descriptive names for your saved queries](#use-descriptive-names-for-your-saved-queries)
 
 
 ## Formatting/readability
@@ -214,8 +215,17 @@ AND NOT EXISTS (
 
 ```
 
-Note that if the `archive.video_id` column contains `NULL`, rows will never be returned (see [tip 12](#be-aware-of-how-not-in-behaves-with-null-values)).
+Note that I advise against using `NOT IN` - see the following tip.
 
+### `NOT EXISTS` is faster than `NOT IN` if your column allows `NULL`
+
+If you're using an anti-join with `NOT IN` you'll likely find it's slower than using `NOT EXISTS`, if the values/column you're comparing against allows `NULL`.
+
+I've experienced this when using Snowflake and the PostgreSQL Wiki explicity [calls this out](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_NOT_IN):
+
+*"...NOT IN (SELECT ...) does not optimize very well."*
+
+Aside from being slow, using `NOT IN` will not work as intended if there is a `NULL` in the values being compared against - see [tip 11](#be-aware-of-how-not-in-behaves-with-null-values).
 
 ### Use `QUALIFY` to filter window functions
 
@@ -292,30 +302,70 @@ ORDER BY dept_salary -- Be sure to order by this column to ensure the Total appe
 ;
 ```
 
-### Use `EXCEPT` to find the difference between two datasets
+### Use `EXCEPT` to find the difference between two tables
 
 `EXCEPT` returns rows from the first query's result set that don't appear in the second query's result set.
 
 ```SQL
 -- Miles Davis will be returned from this query.
-SELECT Name
+SELECT artist_name
 FROM artist
-WHERE name = 'Miles Davis'
+WHERE artist_name = 'Miles Davis'
 EXCEPT 
-SELECT Name
+SELECT artist_name
 FROM artist
-WHERE name = 'Nirvana'
+WHERE artist_name = 'Nirvana'
 ;
 
 -- Nothing will be returned from this query as 'Miles Davis' appears in both queries' result sets.
-SELECT Name
+SELECT artist_name
 FROM artist
-WHERE name = 'Miles Davis'
+WHERE artist_name = 'Miles Davis'
 EXCEPT 
-SELECT Name
+SELECT artist_name
 FROM artist
-WHERE name = 'Miles Davis'
+WHERE artist_name = 'Miles Davis'
 ;
+```
+
+You can also utilise `EXCEPT` with `UNION ALL` to verify whether two tables have the same data.
+
+If no rows are returned the tables are identical - otherwise, what's returned are rows causing the difference:
+
+```SQL
+/* 
+The first query will return rows from employees that aren't present in department.
+
+The second query will return rows from department that aren't present in employees.
+
+The UNION ALL will ensure that the final result set returned combines these all 
+of these rows so you know which rows are causing the difference.
+*/
+(
+SELECT 
+id
+, employee_name
+FROM employees
+EXCEPT 
+SELECT 
+id
+, employee_name
+FROM department
+)
+UNION ALL 
+(
+SELECT 
+id
+, employee_name
+FROM department
+EXCEPT
+SELECT 
+id
+, employee_name
+FROM employees
+)
+;
+
 ```
 
 ## Common pitfalls
