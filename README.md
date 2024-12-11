@@ -19,7 +19,7 @@ Please note that some of these tips might not be relevant for all RDBMs.
 4) [Consider CTEs when writing complex queries](#consider-ctes-when-writing-complex-queries)
 
 ### Useful features
-7) [Anti-joins will return rows not present in another table](#anti-joins-will-return-rows-not-present-in-another-table)
+7) [Anti-joins will return rows from one table that have no match in another table](#anti-joins-will-return-rows-from-one-table-that-have-no-match-in-another-table)
 8) [Use `QUALIFY` to filter window functions](#use-qualify-to-filter-window-functions)
 9) [You can (but shouldn't always) `GROUP BY` column position](#you-can-but-shouldnt-always-group-by-column-position)
 10) [You can create a grand total with `GROUP BY ROLLUP`](#you-can-create-a-grand-total-with-group-by-rollup)
@@ -28,7 +28,7 @@ Please note that some of these tips might not be relevant for all RDBMs.
 ### Avoid pitfalls
 
 12) [Be aware of how `NOT IN` behaves with `NULL` values](#be-aware-of-how-not-in-behaves-with-null-values)
-13) [Avoid ambiguity when renaming calculated fields](#avoid-ambiguity-when-renaming-calculated-fields)
+13) [Avoid ambiguity when naming calculated fields](#avoid-ambiguity-when-naming-calculated-fields)
 14) [Always specify which column belongs to which table](#always-specify-which-column-belongs-to-which-table)
 15) [Understand the order of execution](#understand-the-order-of-execution)
 16) [Comment your code!](#comment-your-code)
@@ -175,41 +175,47 @@ FROM cinema_sales AS cs
 
 ## Useful features 
 
-### Anti-joins will return rows not present in another table
-Anti-joins are incredible useful, mostly (in my experience) for when you only want to return rows/values from one table that aren't present in another table.
-- You could instead use a subquery although you might want to experiment as to which method is faster.
+### Anti-joins will return rows from one table that have no match in another table
 
-```SQL
--- Anti-join.
+Use anti-joins when you want to return rows from one table that don't have a match in another table.
+
+For example, you only want video IDs of content that hasn't been archived.
+
+There are multiple ways to do an anti-join:
+
+```SQL 
+-- Using a LEFT JOIN:
 SELECT 
-video_content.*
-FROM video_content
+vc.video_id
+FROM video_content AS vc
     LEFT JOIN archive
-    on video_content.series_id = archive.series_id
+    ON vc.video_id = archive.video_id
 WHERE 1=1
-AND archive.series_id IS NULL -- Any rows with no match will have a NULL value.
+AND archive.video_id IS NULL -- Any rows with no match will have a NULL value.
 ;
 
--- Subquery.
+-- Using NOT IN/subquery:
 SELECT 
-*
+video_id
 FROM video_content
 WHERE 1=1
-AND series_id NOT IN (SELECT DISTINCT SERIES_ID FROM archive) -- Be mindful of NULL values.
-;
+AND series_id NOT IN (SELECT video_id FROM archive) -- Be mindful of NULL values.
 
--- Correlated subquery.
+-- Using NOT EXISTS/correlated subquery:
 SELECT 
-*
-FROM video_content vc
+video_id
+FROM video_content AS vc
 WHERE 1=1
 AND NOT EXISTS (
         SELECT 1
-        FROM archive a
-        WHERE a.series_id = vc.series_id
-    )
-;
+        FROM archive AS a
+        WHERE a.video_id = vc.video_id
+        )
+
 ```
+
+Note that if the `archive.video_id` column contains `NULL`, rows will never be returned (see [tip 12](#be-aware-of-how-not-in-behaves-with-null-values)).
+
 
 ### Use `QUALIFY` to filter window functions
 
@@ -340,9 +346,9 @@ WHERE NOT EXISTS (
 ;
 ```
 
-### Avoid ambiguity when renaming calculated fields
+### Avoid ambiguity when naming calculated fields
 
-When creating a calculated field, you might be tempted to rename it to an existing column, but this can lead to unexpected behaviour, such as a 
+When creating a calculated field, you might be tempted to name it the same as an existing column, but this can lead to unexpected behaviour, such as a 
 window function operating on the wrong field.
 
 ```SQL
