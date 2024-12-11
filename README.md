@@ -368,7 +368,7 @@ FROM employees
 
 ```
 
-## Common pitfalls
+## Avoid pitfalls
 
 ### Be aware of how `NOT IN` behaves with `NULL` values
 
